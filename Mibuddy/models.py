@@ -9,8 +9,8 @@ class User(models.Model):
     email = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
-    gender = models.CharField(choices=GENDER_CHOICES, default='male', max_length=100)
-    age = models.IntegerField()
+    gender = models.CharField(choices=GENDER_CHOICES, default='Male', max_length=100)
+    age = models.IntegerField(default=0)
     nationality = models.CharField(choices=COUNTRY_CHOICES, default='Netherlands', max_length=100)
     language = models.CharField(max_length=100, blank=True, default='')
     occupation = models.CharField(max_length=100, blank=True, default='')
@@ -23,3 +23,12 @@ class Token(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     userId = models.IntegerField()
     token = models.CharField(max_length=100)
+
+
+class Message(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    userId = models.IntegerField()
+    communityId = models.IntegerField()
+
+class PinnedMessage(models.Model):
+    messageId = models.IntegerField()

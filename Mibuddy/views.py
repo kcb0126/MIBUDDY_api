@@ -7,6 +7,17 @@ from Mibuddy.serializers import UserSerializer, TokenSerializer
 from Mibuddy.utils import generate_random_string, is_valid_email
 
 
+############################################# admin ##############################################
+
+class UserList(APIView):
+    def get(self, request, format=None):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+
+#################################### Log in and Sign up Views #####################################
+
 def generate_token():
     while True:
         tokenstr = generate_random_string(40)
@@ -34,7 +45,7 @@ class LogIn(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         # check validation of email
         if is_valid_email(email) is not True:
-            return Response({'detail': 'Email is not vaild.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'email': ['Email is not vaild.']}, status=status.HTTP_400_BAD_REQUEST)
         # find user from the email and password
         try:
             user = User.objects.get(email=email, password=password)
@@ -64,5 +75,38 @@ class SignUp(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+########################################## After log in, do several action via these views! #####################
+
+def get_user(request):
+    """
+    Check token and return user
+    :param request: must contain token to authenticate
+    :param format:
+    :return: User model or None
+    """
+    try:
+        token = Token.objects.get(token=request.data['token'])
+        user = User.objects.get(pk=token.userId)
+        return user
+    except:
+        return None
+
+
+class Profile(APIView):
+    def post(self, request, format=None):
+        """
+        Show user's profile
+        :param request: only token is needed
+        :param format:
+        :return:
+        """
+        user = get_user(request)
+        if user is None:
+            return Response({'Authentication': 'Please log in first.'}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+

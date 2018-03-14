@@ -17,6 +17,9 @@ from django.conf.urls import url
 from Mibuddy import views
 
 urlpatterns = [
+    url(r'^admin/users/$', views.UserList.as_view()),
+
     url(r'^login/$', views.LogIn.as_view()),
     url(r'^signup/$', views.SignUp.as_view()),
+    url(r'^profile/$', views.Profile.as_view()),
 ]
