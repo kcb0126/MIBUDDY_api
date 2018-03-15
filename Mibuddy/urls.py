@@ -18,8 +18,17 @@ from Mibuddy import views
 
 urlpatterns = [
     url(r'^admin/users/$', views.UserList.as_view()),
+    url(r'^admin/messages/$', views.MessageListAdmin.as_view()),
 
     url(r'^login/$', views.LogIn.as_view()),
     url(r'^signup/$', views.SignUp.as_view()),
     url(r'^profile/$', views.Profile.as_view()),
+
+    url(r'^create/$', views.CreateNewGroup.as_view()),
+    url(r'groups/$', views.GroupList.as_view()),
+    url(r'join/$', views.JoinGroup.as_view()),
+
+    url(r'send/$', views.SendMessage.as_view()),
+    url(r'messages/$', views.MessageList.as_view()),
+    url(r'pin/$', views.PinMessage.as_view()),
 ]
